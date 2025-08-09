@@ -125,5 +125,10 @@ tasks {
     publishPlugin {
         dependsOn(patchChangelog)
     }
+    
+    // Disable buildSearchableOptions task to avoid locale issues
+    named("buildSearchableOptions") {
+        enabled = false
+    }
 }
 
