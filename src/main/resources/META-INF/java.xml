@@ -1,0 +1,7 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <psi.referenceContributor implementation="com.github.frdevbyq.personideaplugin.showcomment.java.JsonJumpJava"/>
+    <editor.linePainter implementation="com.github.frdevbyq.personideaplugin.showcomment.java.JavaLangDoc"/>
+    <lang.psiStructureViewFactory language="JAVA" implementationClass="com.github.frdevbyq.personideaplugin.showcomment.CommentStructureViewFactory"/>
+  </extensions>
+</idea-plugin>

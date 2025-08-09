@@ -5,11 +5,117 @@
     <vendor>frdevbyq</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <!-- Show Comment Dependencies - Optional for multi-language support (IC only) -->
+    <depends optional="true" config-file="java.xml">com.intellij.modules.java</depends>
+    <depends optional="true" config-file="kotlin.xml">org.jetbrains.kotlin</depends>
+    <depends optional="true" config-file="json.xml">com.intellij.modules.json</depends>
+    <depends optional="true" config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
+    <resource-bundle>messages.ShowCommentBundle</resource-bundle>
+
+    <extensions defaultExtensionNs="org.jetbrains.kotlin">
+        <supportsKotlinPluginMode supportsK2="true" />
+    </extensions>
+
+    <applicationListeners>
+        <listener class="com.github.frdevbyq.personideaplugin.showcomment.cache.CacheUpdateEditorListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+        <listener class="com.github.frdevbyq.personideaplugin.showcomment.cache.TreeCacheInvalidator"
+                  topic="com.intellij.openapi.fileEditor.FileDocumentManagerListener"/>
+    </applicationListeners>
+
+    <projectListeners>
+        <listener class="com.github.frdevbyq.personideaplugin.showcomment.cache.CacheUpdateProjectListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </projectListeners>
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="com.github.frdevbyq.personideaplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.github.frdevbyq.personideaplugin.startup.MyProjectActivity" />
+        
+        <!-- Show Comment Extensions -->
+        <editor.linePainter implementation="com.github.frdevbyq.personideaplugin.showcomment.LineEnd"/>
+        <projectViewNodeDecorator implementation="com.github.frdevbyq.personideaplugin.showcomment.Tree"/>
+        
+        <!-- Settings Services -->
+        <applicationService serviceImplementation="com.github.frdevbyq.personideaplugin.showcomment.settings.AppSettingsState"/>
+        <applicationService serviceImplementation="com.github.frdevbyq.personideaplugin.showcomment.settings.GlobalSettingsState"/>
+        <projectService serviceImplementation="com.github.frdevbyq.personideaplugin.showcomment.settings.ProjectSettingsState"/>
+        
+        <!-- External Doc Service -->
+        <projectService serviceImplementation="com.github.frdevbyq.personideaplugin.showcomment.external.ExternalDocService"/>
+        
+        <!-- Live Templates -->
+        <defaultLiveTemplates file="/liveTemplates/show-comment-_.xml"/>
+        <defaultLiveTemplates file="/liveTemplates/show-comment-doc.xml"/>
+        <defaultLiveTemplates file="/liveTemplates/show-comment-xml.xml"/>
+
+        <!-- Settings UI -->
+        <applicationConfigurable parentId="tools" 
+                                instance="com.github.frdevbyq.personideaplugin.showcomment.settings.AppSettingsConfigurable"
+                                id="com.github.frdevbyq.personideaplugin.showcomment.settings.AppSettingsConfigurable"
+                                displayName="PersonIdeaPlugin: Show Comment App"/>
+        <applicationConfigurable parentId="com.github.frdevbyq.personideaplugin.showcomment.settings.AppSettingsConfigurable"
+                                instance="com.github.frdevbyq.personideaplugin.showcomment.settings.GlobalSettingsConfigurable"
+                                id="com.github.frdevbyq.personideaplugin.showcomment.settings.GlobalSettingsConfigurable"
+                                displayName="PersonIdeaPlugin: Show Comment Global"/>
+        <projectConfigurable parentId="com.github.frdevbyq.personideaplugin.showcomment.settings.AppSettingsConfigurable"
+                            instance="com.github.frdevbyq.personideaplugin.showcomment.settings.ProjectSettingsConfigurable"
+                            id="com.github.frdevbyq.personideaplugin.showcomment.settings.ProjectSettingsConfigurable"
+                            displayName="PersonIdeaPlugin: Show Comment Project"/>
+        
+        <!-- Structure View for Java files with comment display -->
+        <lang.psiStructureViewFactory language="JAVA" 
+                                     implementationClass="com.github.frdevbyq.personideaplugin.showcomment.CommentStructureViewFactory"
+                                     order="first"/>
     </extensions>
+
+    <actions>
+        <action id="com.github.frdevbyq.personideaplugin.showcomment.CopyReferenceSimple"
+                class="com.github.frdevbyq.personideaplugin.showcomment.CopyReferenceSimple"
+                text="Copy Class.Method / File:LineNum">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="CopyGroup"/>
+        </action>
+        
+        <action id="com.github.frdevbyq.personideaplugin.showcomment.actions.ReloadExternalDocAction"
+                class="com.github.frdevbyq.personideaplugin.showcomment.actions.ReloadExternalDocAction"
+                text="Reload External Documentation">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+        
+        <action id="com.github.frdevbyq.personideaplugin.showcomment.actions.ClearExternalDocAction"
+                class="com.github.frdevbyq.personideaplugin.showcomment.actions.ClearExternalDocAction"
+                text="Clear External Documentation">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+        
+        <action id="com.github.frdevbyq.personideaplugin.showcomment.actions.LineEndAdd"
+                class="com.github.frdevbyq.personideaplugin.showcomment.actions.LineEndAdd"
+                text="// Add Line Comment">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
+        
+        <action id="com.github.frdevbyq.personideaplugin.showcomment.actions.LineEndCopy"
+                class="com.github.frdevbyq.personideaplugin.showcomment.actions.LineEndCopy"
+                text="// Copy With Line Comment">
+            <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="CopyGroup"/>
+        </action>
+        
+        <!-- Tree Comments Refresh Actions -->
+        <action id="com.github.frdevbyq.personideaplugin.showcomment.actions.RefreshTreeCommentsAction"
+                class="com.github.frdevbyq.personideaplugin.showcomment.actions.RefreshTreeCommentsAction"
+                text="Refresh Tree Comments"
+                description="Refresh all tree comments cache">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+        </action>
+        
+        <action id="com.github.frdevbyq.personideaplugin.showcomment.actions.RefreshCurrentFileCommentsAction"
+                class="com.github.frdevbyq.personideaplugin.showcomment.actions.RefreshCurrentFileCommentsAction"
+                text="Refresh File Comments"
+                description="Refresh current file comments cache">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>

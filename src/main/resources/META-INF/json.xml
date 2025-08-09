@@ -1,0 +1,5 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <editor.linePainter implementation="com.github.frdevbyq.personideaplugin.showcomment.lang.JsonLangDoc"/>
+  </extensions>
+</idea-plugin>
