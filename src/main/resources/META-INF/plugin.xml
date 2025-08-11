@@ -35,7 +35,7 @@
         <postStartupActivity implementation="com.github.frdevbyq.personideaplugin.startup.MyProjectActivity" />
         
         <!-- Show Comment Extensions -->
-        <editor.linePainter implementation="com.github.frdevbyq.personideaplugin.showcomment.LineEnd"/>
+
         <projectViewNodeDecorator implementation="com.github.frdevbyq.personideaplugin.showcomment.Tree"/>
         
         <!-- Settings Services -->

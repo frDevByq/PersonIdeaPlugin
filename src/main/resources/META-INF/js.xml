@@ -1,7 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <editor.linePainter implementation="com.github.frdevbyq.personideaplugin.showcomment.lang.JsLangDoc"/>
-    <editor.linePainter implementation="com.github.frdevbyq.personideaplugin.showcomment.lang.HtmlLangDoc"/>
+
     <lang.psiStructureViewFactory language="JavaScript" implementationClass="com.github.frdevbyq.personideaplugin.showcomment.CommentStructureViewFactory"/>
     <lang.psiStructureViewFactory language="TypeScript" implementationClass="com.github.frdevbyq.personideaplugin.showcomment.CommentStructureViewFactory"/>
   </extensions>

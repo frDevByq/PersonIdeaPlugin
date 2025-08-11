@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <editor.linePainter implementation="com.github.frdevbyq.personideaplugin.showcomment.java.GroovyLangDoc"/>
+
     <lang.psiStructureViewFactory language="Groovy" implementationClass="com.github.frdevbyq.personideaplugin.showcomment.CommentStructureViewFactory"/>
   </extensions>
 </idea-plugin>

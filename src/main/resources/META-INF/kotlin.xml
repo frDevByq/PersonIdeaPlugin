@@ -1,6 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <editor.linePainter implementation="com.github.frdevbyq.personideaplugin.showcomment.java.KotlinLangDoc"/>
+
     <lang.psiStructureViewFactory language="kotlin" implementationClass="com.github.frdevbyq.personideaplugin.showcomment.CommentStructureViewFactory"/>
   </extensions>
 </idea-plugin>
